@@ -14,18 +14,35 @@ import joblib
 from sqlalchemy.pool import QueuePool
 from groq import Groq
 import os
+import logging
 
 
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 # CORS(app)
 
+
+# Set up logging globally
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 # Load the model
 # model = joblib.load('random_forest_model.pkl')
 
 def get_db_connection():
-    engine = create_engine('mysql+mysqlconnector://root:Seenu%40123@localhost/odi_cricket', poolclass=QueuePool, pool_size=10, max_overflow=20)
-    return engine
+    try:
+        db_user = os.environ.get('DB_USER', 'root')
+        db_pass = os.environ.get('DB_PASS', 'sGwKeLDmtoSojXHPByuZmLLRaKjXbJlw')  # Default for local testing
+        db_host = os.environ.get('DB_HOST', 'yamanote.proxy.rlwy.net')
+        db_port = os.environ.get('DB_PORT', '18381')
+        db_name = os.environ.get('DB_NAME', 'railway')
+        connection_string = f'mysql+mysqlconnector://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}'
+        logger.info(f"Connecting to: {connection_string}")
+        return create_engine(connection_string, poolclass=QueuePool, pool_size=10, max_overflow=20)
+    except Exception as e:
+        logger.error(f"DB Connection failed: {str(e)}")
+        return None
+
+engine = get_db_connection()
 
 
 # Set up Groq client with your API key
