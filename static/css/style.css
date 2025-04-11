@@ -1,0 +1,246 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url(../images/background_web_crick\ \(1\).jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Adjust opacity for brightness reduction */
+    z-index: -1;
+}
+
+
+
+
+/* For mobile phones (screens up to 767px wide) */
+@media only screen and (max-width: 767px) {
+    body {
+      
+        color: black !important;
+    }
+}
+
+/* For tablets (screens between 768px and 991px wide) */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    body {
+        color: black !important; 
+    }
+}
+
+/* For desktops (screens 992px and wider) */
+@media only screen and (min-width: 992px) {
+    body {
+   
+        color: black !important;
+    }
+}
+
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+.content {
+    padding: 20px;
+}
+.navbar{
+    background-color: black !important;
+    color: white !important;
+    padding: 10px;
+}
+.nav-link,.navbar-brand{
+    color: white !important;
+}
+.foot{
+    background-color: black !important;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+.icons{
+    color: white !important;
+}
+.foot-nav{
+    text-decoration: none;
+    color: white !important;
+}
+.foot-nav-link{
+    text-decoration: none;
+    color: white !important;
+}
+.foot-nav-link:hover{
+ /* border-bottom: 2px solid white; */
+    color: white !important;
+}
+.foot-nav:hover{
+    border-bottom: 2px solid white;
+
+}
+
+
+
+
+.card {
+    height: 350px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  /* .card:hover{
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(23, 144, 225, 0.8);
+    transform: matrix(1.1, 0, 0, 1.1, 0, 0);
+  } */
+
+
+  .card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: contain;
+    /* background-color: aliceblue; */
+  }
+
+
+.player-details{
+    
+    font-size: 30px;
+    font-weight: bold;
+}
+.player-info-card{
+    border-left:1px solid white;
+    padding-left: 40px;
+}
+/* .player-info-main-card{
+    background-color: blue;
+    color:white;
+} */
+ 
+
+
+
+/* trends page  */
+#consistentWicketTakersChart{
+    /* background-color: rgb(16, 13, 13); */
+    color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+    
+}
+
+#winningPercentageChart{
+color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+}
+#tossImpactChart{
+    color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+}
+#chasing300Chart{
+    color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+
+}
+#teamChasing300Chart{
+
+    color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+}
+
+
+#strikeRateChart{
+
+    color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+
+
+}
+
+.economyRateChart{
+    color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+
+}
+
+
+.homeAwayPerformanceChart{
+
+
+    color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+
+}
+
+
+.base-navbar {
+    background-color: black; /* Keeping the primary blue */
+    color: #ffffff;
+    position:sticky;
+    top:0;
+    left:0;
+    z-index:9999;
+}   
+.stats-card-row{
+    border:3px solid black;
+    /* margin: 50px; */
+    width: 100%;
+
+}
+.eer{
+
+    border:1px solid yellow;
+}
+.ct-stat{
+    /* border: 5px solid green; */
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 49px !important;
+}
+
+/* .img-logo-player{
+    opacity: 0.5;
+} */
+
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.table{
+    color: white !important;
+}
+
+canvas{
+    background-color: white !important;
+}
+
+h1,h2,h3,h4,h5,h6{
+    color: rgb(255, 255, 255) !important;
+}
+

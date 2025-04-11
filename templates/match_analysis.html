@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="text-center mb-4 fw-bold text-uppercase" style="color: #2c3e50;">{{ match.match_name }}</h2>
+
+    <!-- Team 1 Innings Accordion -->
+    <div class="accordion" id="matchAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="team1InningsHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#team1Innings" aria-expanded="true" aria-controls="team1Innings">
+                    <span class="fw-bold">{{ match.team1 }} Innings</span> &nbsp; ({{ match.team1_runs }}/{{ match.team1_wickets }})
+                </button>
+            </h2>
+            <div id="team1Innings" class="accordion-collapse collapse show" aria-labelledby="team1InningsHeading" data-bs-parent="#matchAccordion">
+                <div class="accordion-body p-0">
+                    <table class="table table-hover table-sm m-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Batting</th>
+                                <th data-bs-toggle="tooltip" title="Wicket Type">W</th>
+                                <th data-bs-toggle="tooltip" title="Runs">R</th>
+                                <th data-bs-toggle="tooltip" title="Balls Faced">B</th>
+                                <th>4s</th>
+                                <th>6s</th>
+                                <th data-bs-toggle="tooltip" title="Strike Rate">SR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in team1_batting %}
+                            <tr style="color:black !important">
+                                <td>{{ player.player_name }}</td>
+                                <td>{{ player.wicket_type }} {{ player.bowler_name }} {{ player.fielder_name }}</td>
+                                <td>{{ player.runs }}</td>
+                                <td>{{ player.balls }}</td>
+                                <td>{{ player.fours }}</td>
+                                <td>{{ player.sixes }}</td>
+                                <td>{{ player.strike_rate }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr class="table-secondary" style="color:black !important">
+                                <td>Extras</td>
+                                <td></td>
+                                <td>{{ match.team1_extras }}</td>
+                                <td colspan="4"></td>
+                            </tr>
+                            <tr class="fw-bold" style="color:black !important">
+                                <td>Total</td>
+                                <td>{{ match.team1_wickets }} wickets</td>
+                                <td>{{ match.team1_runs }}</td>
+                                <td colspan="4"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-3" style="color:black !important">
+                        <h5 class="fw-bold" style="color:black !important">Fall of Wickets</h5>
+                        <p class="mb-0" style="color:black !important">{{ team1_fow | map(attribute='overs') | map('string') | join(' overs, ') }}: {{ team1_fow | map(attribute='runs') | join(', ') }} runs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team 2 Bowling -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="team2BowlingHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#team2Bowling" aria-expanded="false" aria-controls="team2Bowling">
+                    <span class="fw-bold">{{ match.team2 }} Bowling</span>
+                </button>
+            </h2>
+            <div id="team2Bowling" class="accordion-collapse collapse" aria-labelledby="team2BowlingHeading" data-bs-parent="#matchAccordion">
+                <div class="accordion-body p-0">
+                    <table class="table table-hover table-sm m-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Bowling</th>
+                                <th data-bs-toggle="tooltip" title="Overs">O</th>
+                                <th data-bs-toggle="tooltip" title="Maidens">M</th>
+                                <th>R</th>
+                                <th>W</th>
+                                <th data-bs-toggle="tooltip" title="Economy Rate">Eco</th>
+                                <th data-bs-toggle="tooltip" title="Dot Balls">D</th>
+                                <th>4s</th>
+                                <th>6s</th>
+                                <th data-bs-toggle="tooltip" title="Wides">WD</th>
+                                <th data-bs-toggle="tooltip" title="No Balls">NB</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bowler in team2_bowling %}
+                            <tr style="color:black !important">
+                                <td>{{ bowler.player_name }}</td>
+                                <td>{{ bowler.overs }}</td>
+                                <td>{{ bowler.maidens }}</td>
+                                <td>{{ bowler.runs }}</td>
+                                <td>{{ bowler.wickets }}</td>
+                                <td>{{ bowler.economy }}</td>
+                                <td>{{ bowler.dots }}</td>
+                                <td>{{ bowler.fours }}</td>
+                                <td>{{ bowler.sixes }}</td>
+                                <td>{{ bowler.wides }}</td>
+                                <td>{{ bowler.no_balls }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team 2 Innings -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="team2InningsHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#team2Innings" aria-expanded="false" aria-controls="team2Innings">
+                    <span class="fw-bold">{{ match.team2 }} Innings</span> &nbsp; ({{ match.team2_runs }}/{{ match.team2_wickets }})
+                </button>
+            </h2>
+            <div id="team2Innings" class="accordion-collapse collapse" aria-labelledby="team2InningsHeading" data-bs-parent="#matchAccordion">
+                <div class="accordion-body p-0">
+                    <table class="table table-hover table-sm m-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Batting</th>
+                                <th>W</th>
+                                <th>R</th>
+                                <th>B</th>
+                                <th>4s</th>
+                                <th>6s</th>
+                                <th>SR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in team2_batting %}
+                            <tr style="color:black !important">
+                                <td>{{ player.player_name }}</td>
+                                <td>{{ player.wicket_type }} {{ player.bowler_name }} {{ player.fielder_name }}</td>
+                                <td>{{ player.runs }}</td>
+                                <td>{{ player.balls }}</td>
+                                <td>{{ player.fours }}</td>
+                                <td>{{ player.sixes }}</td>
+                                <td>{{ player.strike_rate }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr class="table-secondary" style="color:black !important">
+                                <td style="color:black !important">Extras</td>
+                                <td></td>
+                                <td style="color:black !important">{{ match.team2_extras }}</td>
+                                <td colspan="4"></td>
+                            </tr>
+                            <tr class="fw-bold">
+                                <td style="color:black !important">Total</td>
+                                <td style="color:black !important">{{ match.team2_wickets }} wickets</td>
+                                <td style="color:black !important">{{ match.team2_runs }}</td>
+                                <td colspan="4"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-3">
+                        <h5 class="fw-bold" style="color:black !important">Fall of Wickets</h5>
+                        <p class="mb-0" style="color:black !important">{{ team2_fow | map(attribute='overs') | map('string') | join(' overs, ') }}: {{ team2_fow | map(attribute='runs') | join(', ') }} runs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team 1 Bowling -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="team1BowlingHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#team1Bowling" aria-expanded="false" aria-controls="team1Bowling">
+                    <span class="fw-bold">{{ match.team1 }} Bowling</span>
+                </button>
+            </h2>
+            <div id="team1Bowling" class="accordion-collapse collapse" aria-labelledby="team1BowlingHeading" data-bs-parent="#matchAccordion">
+                <div class="accordion-body p-0">
+                    <table class="table table-hover table-sm m-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Bowling</th>
+                                <th>O</th>
+                                <th>M</th>
+                                <th>R</th>
+                                <th>W</th>
+                                <th>Eco</th>
+                                <th>D</th>
+                                <th>4s</th>
+                                <th>6s</th>
+                                <th>WD</th>
+                                <th>NB</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bowler in team1_bowling %}
+                            <tr style="color:black !important">
+                                <td>{{ bowler.player_name }}</td>
+                                <td>{{ bowler.overs }}</td>
+                                <td>{{ bowler.maidens }}</td>
+                                <td>{{ bowler.runs }}</td>
+                                <td>{{ bowler.wickets }}</td>
+                                <td>{{ bowler.economy }}</td>
+                                <td>{{ bowler.dots }}</td>
+                                <td>{{ bowler.fours }}</td>
+                                <td>{{ bowler.sixes }}</td>
+                                <td>{{ bowler.wides }}</td>
+                                <td>{{ bowler.no_balls }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Match Info -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="matchInfoHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#matchInfo" aria-expanded="false" aria-controls="matchInfo">
+                    <span class="fw-bold">Match Information</span>
+                </button>
+            </h2>
+            <div id="matchInfo" class="accordion-collapse collapse" aria-labelledby="matchInfoHeading" data-bs-parent="#matchAccordion">
+                <div class="accordion-body p-3">
+                    <table class="table table-sm m-0">
+                        <tbody style="color:black !important">
+                            <tr><td><strong>Match</strong></td><td>{{ match.match_name }}</td></tr>
+                            <tr><td><strong>Series</strong></td><td>{{ match.series_name }}</td></tr>
+                            <tr><td><strong>Date</strong></td><td>{{ match.date }}</td></tr>
+                            <tr><td><strong>Toss</strong></td><td>{{ match.toss_winner }}</td></tr>
+                            <tr><td><strong>Venue</strong></td><td>{{ match.venue_stadium }}, {{ match.venue_country }}</td></tr>
+                            <tr><td><strong>Umpires</strong></td><td>{{ match.umpire_1 }}, {{ match.umpire_2 }}</td></tr>
+                            <tr><td><strong>Referee</strong></td><td>{{ match.match_referee }}</td></tr>
+                            <tr><td><strong>{{ match.team1 }}</strong></td><td>{{ team1_players | join(', ') }}</td></tr>
+                            <tr><td><strong>{{ match.team2 }}</strong></td><td>{{ team2_players | join(', ') }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+ 
+.accordion-button {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e9ecef;
+    color: #1a252f;
+}
+
+.table {
+    /* background-color: #fff; */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table-dark {
+    background-color: #2c3e50;
+}
+
+.table th, .table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.9rem;
+    }
+    .accordion-button {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+    .container {
+        padding: 0 10px;
+    }
+}
+
+h2, h4, h5 {
+    color: #2c3e50; /* Dark slate for headers */
+}
+
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Enable Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Hover effect for table rows
+    document.querySelectorAll('.table-hover tr').forEach(row => {
+        row.addEventListener('mouseenter', () => row.style.backgroundColor = '#f8f9fa');
+        row.addEventListener('mouseleave', () => row.style.backgroundColor = '');
+    });
+});
+</script>
+
+
+{% endblock %}

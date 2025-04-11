@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <br><br>
+    <h1 class="text-center">Overall Trends</h1><br><br>
+    <!-- <p class="text-center"> Explore player performances, match outcomes, team comparisons, and trends over the years.</p> -->
+</div>
+
+<div class="container mb-4">
+    <canvas id="consistentWicketTakersChart" style="width: 100%;"></canvas>
+</div>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <!-- <h2 class="mt-4">Toss Decision Impact on Match Outcomes</h2> -->
+            <canvas id="tossImpactChart" style="width: 100%;"></canvas>
+        </div>
+        <div class="col-md-4 mb-4">
+            <!-- <h2 class="mt-4">Probability of Successfully Chasing a 300+ Score</h2> -->
+            <canvas id="chasing300Chart" class="text-center" style="width: 100%;"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-4">
+    <canvas id="winningPercentageChart" style="width: 100%;"></canvas>
+</div><br>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- <h2 class="mt-4">Team-wise Probability of Successfully Chasing a 300+ Score</h2> -->
+            <canvas id="teamChasing300Chart" style="width: 100%;"></canvas>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="container mb-4">
+    <h1 class="text-center container ">Average Run Rate Across Stadiums</h1>
+    <img src="data:image/png;base64,{{ plot_url }}" alt="Average Run Rate Across Stadiums" style="width:100%; height:auto;">
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function generateShades(baseColor, numberOfShades) {
+        const shades = [];
+        for (let i = 0; i < numberOfShades; i++) {
+            const shade = `rgba(${baseColor[0]}, ${baseColor[1]}, ${baseColor[2]}, ${(numberOfShades - i) / numberOfShades})`;
+            shades.push(shade);
+        }
+        return shades;
+    }
+
+    const baseRedColor = [151, 35, 63]; // RGB for #97233F
+    const baseGreenColor = [86, 130, 3]; // RGB for #568203
+    const baseGoldColor = [50, 222, 132]; // RGB for #32de84
+    const baseDarkColor = [31, 48, 94]; // RGB for #1F305E
+
+    // Winning Percentage Chart
+    const ctxWinningPercentage = document.getElementById('winningPercentageChart').getContext('2d');
+    const winningPercentagesData = {{ winning_percentages | tojson }};
+    const labelsWinningPercentages = winningPercentagesData.map(data => data.team_name);
+    const dataWinningPercentages = winningPercentagesData.map(data => data.winning_percentage);
+    const redShades = generateShades(baseRedColor, winningPercentagesData.length);
+
+    const winningPercentageChart = new Chart(ctxWinningPercentage, {
+        type: 'bar',
+        data: {
+            labels: labelsWinningPercentages,
+            datasets: [{
+                label: 'Winning Percentage',
+                data: dataWinningPercentages,
+                backgroundColor: redShades,
+                borderWidth: 0,  // Remove borders
+                hoverBackgroundColor: redShades.map(color => color.replace('rgba', 'rgba').replace(')', ', 0.8)'))
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Highest Winning Percentage in ODI History',
+                    font: {
+                        size: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.raw.toFixed(2)}%`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Team',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Winning Percentage',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        },
+                        beginAtZero: true,
+                        callback: function (value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutBounce'
+            }
+        }
+    });
+
+    // Consistent Wicket Takers Chart
+    const ctxConsistentWicketTakers = document.getElementById('consistentWicketTakersChart').getContext('2d');
+    const consistentWicketTakersData = {{ consistent_wicket_takers | tojson }};
+    const labelsConsistentWicketTakers = consistentWicketTakersData.map(data => data.player_name);
+    const dataConsistentWicketTakers = consistentWicketTakersData.map(data => data.total_wickets);
+    const darkShades = generateShades(baseDarkColor, consistentWicketTakersData.length);
+
+    const consistentWicketTakersChart = new Chart(ctxConsistentWicketTakers, {
+        type: 'bar',
+        data: {
+            labels: labelsConsistentWicketTakers,
+            datasets: [{
+                label: 'Total Wickets',
+                data: dataConsistentWicketTakers,
+                backgroundColor: darkShades,
+                borderWidth: 0  // Remove borders
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Most Consistent Wicket-Taker in the Last 5 Years',
+                    font: {
+                        size: 25
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.raw} wickets`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Bowler',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Total Wickets',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Toss Impact Chart
+    const ctxTossImpact = document.getElementById('tossImpactChart').getContext('2d');
+    const tossImpactData = {{ toss_impact | tojson }};
+    const labelsTossImpact = tossImpactData.map(data => data.toss_decision);
+    const dataTossImpact = tossImpactData.map(data => data.win_percentage);
+    const goldShades = generateShades(baseGoldColor, tossImpactData.length);
+
+    const tossImpactChart = new Chart(ctxTossImpact, {
+        type: 'bar',
+        data: {
+            labels: labelsTossImpact,
+            datasets: [{
+                label: 'Win Percentage',
+                data: dataTossImpact,
+                backgroundColor: goldShades,
+                borderWidth: 0,
+                hoverBackgroundColor: goldShades.map(color => color.replace('rgba', 'rgba').replace(')', ', 0.8)'))
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Impact of Toss Decision on Match Outcomes',
+                    font: {
+                        size: 25
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.raw.toFixed(2)}%`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Toss Decision',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Win Percentage',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        },
+                        beginAtZero: true,
+                        callback: function (value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutBounce'
+            }
+        }
+    });
+
+    // Chasing 300+ Chart
+    const ctxChasing300 = document.getElementById('chasing300Chart').getContext('2d');
+    const chasing300Data = {{ chasing_300 | tojson }};
+    const dataChasing300 = [chasing300Data.successful_chases, chasing300Data.total_chases - chasing300Data.successful_chases];
+
+    const chasing300Chart = new Chart(ctxChasing300, {
+        type: 'pie',
+        data: {
+            labels: ['Successful Chases', 'Unsuccessful Chases'],
+            datasets: [{
+                label: 'Chasing 300+ Score',
+                data: dataChasing300,
+                backgroundColor: ['rgb(63, 81, 181)', 'rgb(165, 35, 35)'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Probability of Successfully Chasing a 300+ Score',
+                    font: {
+                        size: 25
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(2);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutBounce'
+            }
+        }
+    });
+
+    // Team-wise Chasing 300+ Chart
+    const ctxTeamChasing300 = document.getElementById('teamChasing300Chart').getContext('2d');
+    const teamChasing300Data = {{ team_chasing_300 | tojson }};
+    const labelsTeamChasing300 = teamChasing300Data.map(data => data.team_name);
+    const dataTeamChasing300 = teamChasing300Data.map(data => data.success_percentage);
+    const greenShades = generateShades(baseGreenColor, teamChasing300Data.length);
+
+    const teamChasing300Chart = new Chart(ctxTeamChasing300, {
+        type: 'bar',
+        data: {
+            labels: labelsTeamChasing300,
+            datasets: [{
+                label: 'Success Percentage',
+                data: dataTeamChasing300,
+                backgroundColor: greenShades,
+                borderWidth: 0,
+                hoverBackgroundColor: greenShades.map(color => color.replace('rgba', 'rgba').replace(')', ', 0.8)'))
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Team-wise Probability of Successfully Chasing a 300+ Score',
+                    font: {
+                        size: 25
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.raw.toFixed(2)}%`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Team',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Success Percentage',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        },
+                        beginAtZero: true,
+                        callback: function (value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutBounce'
+            }
+        }
+    });
+</script>
+{% endblock %}

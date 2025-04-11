@@ -1,0 +1,414 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container ">
+
+    <div class="row " style="margin-top: 40px;" style="color: white !important;">
+        <div class="col-md-9 player-info-main-card">
+            <div class="row" style="margin-bottom: 0px; margin-top: 100px;" style="color: white !important;">
+                <div class="col-md-6 player-info-card">
+                    <p class="player-details" style="color: white !important;">{{ player_details.player_name }}</p>
+                </div>
+                <div class="col-md-6 player-info-card">
+                    <p class="player-details" style="color: white !important;">
+                        <img src="{{ url_for('static', filename=player_details.country_image) }}" alt="{{ player_details.country_name }} logo" style="width: 90px; height: 60px;margin-right: 40px;border-radius: 20px;">
+                        {{ player_details.country_name }}
+                    </p>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 0px; margin-top: 100px;">
+                <div class="col-md-4 player-info-card" style="color: white !important;">
+                    <p>Date of Birth</p>
+                    <p class="player-details">{{ player_details.dob }}</p>
+                </div>
+                <div class="col-md-4 player-info-card" style="color: white !important;">
+                    <p>Batting Style</p>
+                    <p class="player-details">{{ player_details.batting_style }}</p>
+                </div>
+                <div class="col-md-4 player-info-card" style="color: white !important;">
+                    <p>Bowling Style</p>
+                    <p class="player-details">{{ player_details.bowling_style }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <img src="{{ player_details.image_url }}" class="img-fluid" style="width: 100%;" height="150" alt="{{ player_details.player_name }}">
+        </div>
+    </div>
+ 
+   
+    <br>
+
+    <h2 class="mt-4 text-center">Rankings</h2>
+   
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card" style="height: 100px !important; width: 50%;">
+                <div class="card-body">
+                    <h6 class="card-title" style="color: black !important;">Batting Ranking</h6>
+                    <p class="card-text text-center" style="font-size: 30px;">{{ batting_ranking.ranking if batting_ranking else '--' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="height: 100px !important; width: 50%;">
+                <div class="card-body">
+                    <h6 class="card-title" style="color: black !important;">Bowling Ranking</h6>
+                    <p class="card-text text-center" style="font-size: 30px;">{{ bowling_ranking.ranking if bowling_ranking else '--' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+         <br><br>
+
+        <div  >
+            <div class="row">
+                <div class="col-md-6" >
+                    {% if strike_rate_data %}
+                    <!-- <h2 class="mt-4 text-center">Strike Rate Over Time</h2> -->
+                    <canvas id="strikeRateChart"  style="height: 400px !important; width: 100%;"></canvas>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {% if economy_rate_data %}
+                    <!-- <h2 class="mt-4 text-center">Economy Rate Over Time</h2> -->
+                    <canvas id="economyRateChart" style="height: 400px !important; width: 100%;"></canvas>
+                    {% endif %}
+
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-md-6" >
+                    <!-- <h2 class="mt-4 text-center">Runs vs Strike Rate</h2> -->
+                 <!-- <canvas id="runsVsStrikeRateChart" style="height: 400px !important; width: 100%;"></canvas> -->
+                 <img src="data:image/png;base64,{{ plot_url }}" alt="Runs vs Strike Rate" style="width:100% !important; height: 400px !important;">
+
+                </div>
+                <div class="col-md-6 text-center">
+                    <!-- <h2 class="mt-4">Performance in Home vs. Away Matches</h2> -->
+                    <canvas id="homeAwayPerformanceChart" style="height: 400px !important; width: 100%;"></canvas>
+                
+                </div>
+            </div>
+        </div>
+
+
+        
+
+
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% if strike_rate_data %}
+    const ctxStrikeRate = document.getElementById('strikeRateChart').getContext('2d');
+    const strikeRateData = {{ strike_rate_data | tojson }};
+    const labelsStrikeRate = strikeRateData.map(data => data.year);
+    const dataStrikeRate = strikeRateData.map(data => data.avg_strike_rate);
+
+    const strikeRateChart = new Chart(ctxStrikeRate, {
+        type: 'line',
+        data: {
+            labels: labelsStrikeRate,
+            datasets: [{
+                label: 'Strike Rate',
+                data: dataStrikeRate,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgb(75, 192, 192)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Strike Rate Over Time',
+                    font: {
+                        size: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Year: ${context.label}, Strike Rate: ${context.raw}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Year',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Strike Rate',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+
+    {% if economy_rate_data %}
+    const ctxEconomyRate = document.getElementById('economyRateChart').getContext('2d');
+    const economyRateData = {{ economy_rate_data | tojson }};
+    const labelsEconomyRate = economyRateData.map(data => data.year);
+    const dataEconomyRate = economyRateData.map(data => data.avg_economy_rate);
+
+    const economyRateChart = new Chart(ctxEconomyRate, {
+        type: 'line',
+        data: {
+            labels: labelsEconomyRate,
+            datasets: [{
+                label: 'Economy Rate',
+                data: dataEconomyRate,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(255, 99, 132, 1)',
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Economy Rate Over Time',
+                    font: {
+                        size: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Year: ${context.label}, Economy Rate: ${context.raw}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Year',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Economy Rate',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+
+    // const ctxRunsVsStrikeRate = document.getElementById('runsVsStrikeRateChart').getContext('2d');
+    // const runsVsStrikeRateData = {{ runs_vs_strike_rate | tojson }};
+    // const dataRunsVsStrikeRate = runsVsStrikeRateData.map(data => ({ x: data.strike_rate, y: data.runs }));
+
+    // const runsVsStrikeRateChart = new Chart(ctxRunsVsStrikeRate, {
+    //     type: 'scatter',
+    //     data: {
+    //         datasets: [{
+    //             label: 'Runs vs Strike Rate',
+    //             data: dataRunsVsStrikeRate,
+    //             borderColor: 'rgba(54, 162, 235, 1)',
+    //             backgroundColor: 'rgba(54, 162, 235, 0.2)',
+    //             borderWidth: 2,
+    //             pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+    //             pointBorderColor: '#fff',
+    //             pointHoverBackgroundColor: '#fff',
+    //             pointHoverBorderColor: 'rgba(54, 162, 235, 1)',
+    //             pointRadius: 7,
+    //             pointHoverRadius: 10,
+    //             pointStyle: 'rectRounded',
+    //             fill: true
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         plugins: {
+    //             title: {
+    //                 display: true,
+    //                 text: 'Runs vs Strike Rate',
+    //                 font: {
+    //                     size: 20
+    //                 }
+    //             },
+    //             tooltip: {
+    //                 callbacks: {
+    //                     label: function(context) {
+    //                         return `Strike Rate: ${context.raw.x}, Runs: ${context.raw.y}`;
+    //                     }
+    //                 }
+    //             }
+    //         },
+    //         scales: {
+    //             x: {
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Strike Rate',
+    //                     font: {
+    //                         size: 16
+    //                     }
+    //                 },
+    //                 ticks: {
+    //                     font: {
+    //                         size: 14
+    //                     }
+    //                 }
+    //             },
+    //             y: {
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Runs',
+    //                     font: {
+    //                         size: 16
+    //                     }
+    //                 },
+    //                 ticks: {
+    //                     font: {
+    //                         size: 14
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
+
+    const ctxHomeAwayPerformance = document.getElementById('homeAwayPerformanceChart').getContext('2d');
+    const homeAwayPerformanceData = {{ home_away_performance | tojson }};
+    const labelsHomeAwayPerformance = homeAwayPerformanceData.map(data => data.match_location);
+    const dataHomeAwayRuns = homeAwayPerformanceData.map(data => data.avg_runs);
+    const dataHomeAwayStrikeRate = homeAwayPerformanceData.map(data => data.avg_strike_rate);
+
+    const homeAwayPerformanceChart = new Chart(ctxHomeAwayPerformance, {
+        type: 'bar',
+        data: {
+            labels: labelsHomeAwayPerformance,
+            datasets: [
+                {
+                    label: 'Average Runs',
+                    data: dataHomeAwayRuns,
+                    backgroundColor: 'rgb(75, 192, 192)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Average Strike Rate',
+                    data: dataHomeAwayStrikeRate,
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Performance in Home vs. Away Matches',
+                    font: {
+                        size: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Match Location',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Performance Metrics',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

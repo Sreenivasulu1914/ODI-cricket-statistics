@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Teams</h2>
+
+<div class="container">
+    <div class="row">
+        {% for team in teams %}
+        <div class="col-md-3">
+            <div class="card mb-4" style="width: 18rem;">
+                {% if team.country_image %}
+                <img class="card-img-top" src="{{ url_for('static', filename=team.country_image) }}" alt="{{ team.country_name }} logo">
+                
+                {% else %}
+                <img class="card-img-top" src="{{ url_for('static', filename='default_image.png') }}" alt="Default logo">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title px-3" style="color: black !important;">{{ team.country_name }}</h5>
+                    <a href="{{ url_for('team_players', team_id=team.country_id) }}" class="btn btn-primary text-center">View More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
