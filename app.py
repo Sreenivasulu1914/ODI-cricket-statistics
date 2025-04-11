@@ -13,6 +13,8 @@ import base64
 import joblib
 from sqlalchemy.pool import QueuePool
 from groq import Groq
+import os
+
 
 
 app = Flask(__name__)
@@ -33,6 +35,12 @@ client = Groq(api_key="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"
 
 
 
+def download_file(url, dest):
+    response = requests.get(url)
+    with open(dest, 'wb') as f:
+        f.write(response.content)
+
+download_file('https://drive.google.com/file/d/1mP_sp32HpezIATR_AprxtGOD_XAOlS9x/view?usp=sharing', 'batsman_data.pkl')
 
 
 
@@ -893,5 +901,10 @@ def match_analysis(match_id):
                            team1_batting=team1_batting, team2_batting=team2_batting, team1_fow=team1_fow, team2_fow=team2_fow,
                            team2_bowling=team2_bowling, team1_bowling=team1_bowling)
 
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
