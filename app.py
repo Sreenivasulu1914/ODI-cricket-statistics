@@ -101,13 +101,7 @@ def chat():
 
 
 
-# Database connection with pooling
-def get_db_connection():
-    engine = create_engine('mysql+mysqlconnector://root:Seenu%40123@localhost/odi_cricket', 
-                           poolclass=QueuePool, pool_size=10, max_overflow=20)
-    return engine
 
-engine = get_db_connection()
 
 # # Load pre-trained models and data
 # batsman_model = joblib.load('batsman_runs_model.pkl')
