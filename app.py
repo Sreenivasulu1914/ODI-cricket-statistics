@@ -92,11 +92,11 @@ def get_db_connection():
 
 engine = get_db_connection()
 
-# Load pre-trained models and data
-batsman_model = joblib.load('batsman_runs_model.pkl')
+# # Load pre-trained models and data
+# batsman_model = joblib.load('batsman_runs_model.pkl')
 # batsman_df = joblib.load('batsman_data.pkl')
-batting_order_model = joblib.load('batting_order_model.pkl')
-players_df = joblib.load('recent_players.pkl')
+# batting_order_model = joblib.load('batting_order_model.pkl')
+# players_df = joblib.load('recent_players.pkl')
 
 
 
