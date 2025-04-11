@@ -16,7 +16,6 @@ from groq import Groq
 import os
 
 
-
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 # CORS(app)
@@ -35,12 +34,6 @@ client = Groq(api_key="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"
 
 
 
-def download_file(url, dest):
-    response = requests.get(url)
-    with open(dest, 'wb') as f:
-        f.write(response.content)
-
-download_file('https://drive.google.com/file/d/1mP_sp32HpezIATR_AprxtGOD_XAOlS9x/view?usp=sharing', 'batsman_data.pkl')
 
 
 
@@ -101,7 +94,7 @@ engine = get_db_connection()
 
 # Load pre-trained models and data
 batsman_model = joblib.load('batsman_runs_model.pkl')
-batsman_df = joblib.load('batsman_data.pkl')
+# batsman_df = joblib.load('batsman_data.pkl')
 batting_order_model = joblib.load('batting_order_model.pkl')
 players_df = joblib.load('recent_players.pkl')
 
