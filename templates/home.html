@@ -104,13 +104,13 @@
                 </tr>
             </thead>
             <tbody id="matches-table-body">
-                <!-- Match rows will be inserted here by JavaScript -->
+                
             </tbody>
         </table>
     </div>
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center" id="pagination">
-            <!-- Pagination controls will be inserted here by JavaScript -->
+            
         </ul>
     </nav>
 </div>
@@ -142,7 +142,7 @@
 
                     data.matches.forEach(match => {
                         const matchRow = document.createElement('tr');
-                        matchRow.style.cursor = 'pointer'; // Change cursor to pointer for better UX
+                        matchRow.style.cursor = 'pointer'; 
                         matchRow.onclick = function () {
                             window.location.href = `/match_detail/${match.id}`;
                         };
@@ -243,7 +243,7 @@
 
 
 
-
+<!-- 
 
 <div class="container">
     <h2 class="mt-4 py-4 px-4 text-center bg-white" style="color: black !important; border-radius: 4px;">Recent Matches (2023)</h2>
@@ -322,10 +322,189 @@
 
         cards.forEach((card) => observer.observe(card));
     });
+</script> -->
+
+
+
+
+<div class="container">
+    <h2 class="mt-4 py-4 px-4 text-center bg-white rounded">Recent Matches (2023)</h2>
+    <hr>
+    <br>
+    <div class="row">
+        {% for match in recent_matches %}
+        <div class="col-md-3 mb-4 card-container">
+            <a href="{{ url_for('match_analysis', match_id=match.id) }}" class="card-link">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="match-date">{{ match.date }}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="team-row">
+                            <div class="team-info">
+                                <img src="{{ url_for('static', filename=match.team1_image) }}" 
+                                     alt="{{ match.team1 }} logo" 
+                                     class="team-logo">
+                                <span class="team-name">{{ match.team1 }}</span>
+                            </div>
+                            <div class="team-score">
+                                {{ match.team1_runs }}/{{ match.team1_wickets }}
+                            </div>
+                        </div>
+                        <div class="team-row">
+                            <div class="team-info">
+                                <img src="{{ url_for('static', filename=match.team2_image) }}" 
+                                     alt="{{ match.team2 }} logo" 
+                                     class="team-logo">
+                                <span class="team-name">{{ match.team2 }}</span>
+                            </div>
+                            <div class="team-score">
+                                {{ match.team2_runs }}/{{ match.team2_wickets }}
+                            </div>
+                        </div>
+                        <div class="match-result">
+                            <p>{{ match.result }}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+</div>
+
+<style>
+    .rounded {
+        border-radius: 8px !important;
+        color: black !important;
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        background: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+        text-align: center;
+        padding: 12px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .match-date {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .team-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        transition: background-color 0.2s ease;
+    }
+
+    .team-row:hover {
+        background-color: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .team-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .team-logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .team-logo:hover {
+        transform: scale(1.1);
+    }
+
+    .team-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .team-score {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #2c3e50;
+        background: #e9ecef;
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+
+    .match-result {
+        text-align: center;
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .match-result p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #444;
+        font-weight: 500;
+    }
+
+    .card-container {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .card-container.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".card-container");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add("visible");
+                    }, index * 100); // Staggered animation
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach((card) => observer.observe(card));
+    });
 </script>
-
-
-
 
 
 

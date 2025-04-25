@@ -45,11 +45,46 @@
 
 
 
-
 <div class="container mb-4">
-    <h1 class="text-center container ">Average Run Rate Across Stadiums</h1>
-    <img src="data:image/png;base64,{{ plot_url }}" alt="Average Run Rate Across Stadiums" style="width:100%; height:auto;">
+    <h1 class="text-center">Average Run Rate Across Stadiums</h1>
+    <div class="scrollable-chart-container">
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Average Run Rate Across Stadiums" style="width: 100%; height: auto;">
+    </div>
 </div>
+
+<style>
+.scrollable-chart-container {
+    max-height: 500px; /* Limits the visible height; adjust as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    padding: 10px; /* Adds padding for aesthetics */
+    border: 1px solid #ddd; /* Optional: Visual clarity */
+    border-radius: 5px; /* Optional: Rounds corners for UI/UX */
+    background-color: #fff; /* Ensures readability */
+}
+
+/* Ensure the image fits the container */
+.scrollable-chart-container img {
+    display: block; /* Ensures proper alignment */
+    max-width: 100%; /* Prevents horizontal overflow */
+    height: auto; /* Maintains aspect ratio */
+}
+
+/* Optional: Improve scrollbar appearance (modern browsers) */
+.scrollable-chart-container::-webkit-scrollbar {
+    width: 8px;
+}
+.scrollable-chart-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.scrollable-chart-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+.scrollable-chart-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+</style>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
